@@ -23,7 +23,12 @@ switch($requestMethod) {
         echo $response;
         break;
     default:
+        $response = [
+            'status' => false,
+            'message' => $requestMethod. 'Method Not Allowed'
+        ];
         header("HTTP/1.1 405 Method Not Allowed");
+        echo json_endcode($response);
         break;
 }
 ?>

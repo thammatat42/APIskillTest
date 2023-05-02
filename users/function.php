@@ -172,6 +172,40 @@ function UpdateUsers($userInput, $userParams) {
     }
 }
 
+function DeleteUsers($userParams) {
+    global $connect;
+
+    if(!isset($userParams['id'])) {
+        return ErrorMsg('ไม่พบ ID ในระบบ');
+    } elseif($userParams['id'] == null) {
+        return ErrorMsg('กรุณากรอก ID');
+    }
+
+    $ID = $userParams['id'];
+    
+
+    $stmt_delete = $connect->prepare("DELETE FROM tb_user WHERE ID = :ID LIMIT 1");
+    $stmt_delete->bindParam(':ID', $ID);
+    $Delete_User = $stmt_delete->execute();
+
+    if($Delete_User) {
+        $response = [
+            'status' => true,
+            'message' => 'Deleted user Successfully'
+        ];
+        http_response_code(200);
+        header("HTTP/1.1 200 OK");
+        return json_encode($response);
+    } else {
+        $response = [
+            'status' => false,
+            'message' => 'Not Found'
+        ];
+        http_response_code(404);
+        header("HTTP/1.1 404 Not Found");
+        return json_encode($response);
+    }
+}
 //Paremeters function one by one
 function getUser($inputID) {
     global $connect;

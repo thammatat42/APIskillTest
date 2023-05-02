@@ -9,17 +9,15 @@ header('Access-Control-Allow-Headers: Access-Control-Allow-Headers, Access-Contr
 $requestMethod = $_SERVER["REQUEST_METHOD"];
 
 switch($requestMethod) {
-    case 'PUT':
+    case 'DELETE':
         include_once './function.php';
 
-        $data = json_decode(file_get_contents("php://input"), true);
-
-       
-        $response = UpdateUsers($data, $_GET);
+        $response = DeleteUsers($_GET);
 
         echo $response;
         break;
     default:
+        
         $response = [
             'status' => false,
             'message' => $requestMethod. 'Method Not Allowed'
