@@ -98,6 +98,130 @@ function InsertUsers($userInput) {
 
 }
 
+function UpdateUsers($userInput, $userParams) {
+    global $connect;
+
+    if(!isset($userParams['id'])) {
+        return ErrorMsg('ไม่พบ ID ในระบบ');
+    } elseif($userParams['id'] == null) {
+        return ErrorMsg('กรุณากรอก ID');
+    }
+
+    $ID = $userParams['id'];
+
+
+    $firstname = $userInput['firstname'];
+    $lastname = $userInput['lastname'];
+    $contact = $userInput['contact'];
+    $img = $userInput['img'];
+    $email = $userInput['email'];
+    $gender = $userInput['gender'];
+    $address = $userInput['address'];
+
+    if(empty(trim($firstname))) {
+        return ErrorMsg('กรุณากรอกชื่อ');
+    } elseif(empty(trim($lastname))) {
+        return ErrorMsg('กรุณากรอกนามสกุล');
+    } elseif(empty(trim($contact))) {
+        return ErrorMsg('กรุณากรอกเบอร์โทรศัพท์');
+    } elseif(empty(trim($email))) {
+        return ErrorMsg('กรุณากรอกอีเมล');
+    } elseif(empty(trim($gender))) {
+        return ErrorMsg('กรุณาเลือกเพศ');
+    } elseif(empty(trim($address))) {
+        return ErrorMsg('กรุณากรอกที่อยู่');
+    } else {        
+
+        $stmt_update = $connect->prepare("UPDATE tb_user 
+        SET FNAME = :FNAME
+        , LNAME = :LNAME
+        , CONTACT = :CONTACT
+        , IMG = :IMG
+        , EMAIL = :EMAIL
+        , GENDER = :GENDER
+        , ADDRESS = :ADDRESS
+        WHERE ID = :ID
+        ");
+        $stmt_update->bindParam(':FNAME', $firstname);
+        $stmt_update->bindParam(':LNAME', $lastname);
+        $stmt_update->bindParam(':CONTACT', $contact);
+        $stmt_update->bindParam(':IMG', $img);
+        $stmt_update->bindParam(':EMAIL', $email);
+        $stmt_update->bindParam(':GENDER', $gender);
+        $stmt_update->bindParam(':ADDRESS', $address);
+        $stmt_update->bindParam(':ID', $ID);
+        $Update_User = $stmt_update->execute();
+
+        if($Update_User) {
+            $response = [
+                'status' => true,
+                'message' => 'Updated user Successfully'
+            ];
+            http_response_code(200);
+            header("HTTP/1.1 200 OK");
+            return json_encode($response);
+        } else {
+            $response = [
+                'status' => false,
+                'message' => 'Internal Server Error'
+            ];
+            http_response_code(500);
+            header("HTTP/1.1 500 Internal Server Error");
+            return json_encode($response);
+        }
+    }
+}
+
+//Paremeters function one by one
+function getUser($inputID) {
+    global $connect;
+
+    $id = intval($inputID['id']);
+    
+    if(empty(trim($id))) {
+        return ErrorMsg('กรุณากรอก ID');
+    } else {
+        $stmt_show_data = $connect->prepare("SELECT * FROM tb_user WHERE ID = :ID"); 
+        $stmt_show_data->bindParam(':ID', $id);
+        $exec = $stmt_show_data->execute();
+
+        if($exec) {
+
+            $result_show_data = $stmt_show_data->fetch(PDO::FETCH_OBJ);
+            
+            if($result_show_data){
+                $response = [
+                    'status' => true,
+                    'response' => $result_show_data,
+                    'message' => 'List user Successfully'
+                ];
+                http_response_code(200);
+                header("HTTP/1.1 200 OK");
+                return json_encode($response);
+        
+            } else {
+                $response = [
+                    'status' => false,
+                    'message' => 'Not found data'
+                ];
+                http_response_code(404);
+                header("HTTP/1.1 404 Not found data");
+                return json_encode($response);
+            }
+
+        } else {
+            $response = [
+                'status' => false,
+                'message' => 'Internal Server Error'
+            ];
+            http_response_code(500);
+            header("HTTP/1.1 500 Internal Server Error");
+            return json_encode($response);
+        }
+    }
+}
+
+//List all
 function getUsers(){
     global $connect;
 
