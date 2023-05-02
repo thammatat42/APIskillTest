@@ -13,6 +13,8 @@ How to install this demo
   `GENDER` varchar(10) NOT NULL,
   `ADDRESS` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 3.Clone this project on server
 4.Use Postman for test API CRUD
   Link for testing (Port server depend on you setting.)
