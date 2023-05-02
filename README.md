@@ -15,8 +15,9 @@ How to install this demo
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-3.Clone this project on server
-4.Use Postman for test API CRUD
+  3.Clone this project on server
+
+  4.Use Postman for test API CRUD
   Link for testing (Port server depend on you setting.)
   - Read: http://localhost:84/RestfulAPI/users/read.php (GET)
   - Read on Parameters: http://localhost:84/RestfulAPI/users/read.php?id=1 (GET)
